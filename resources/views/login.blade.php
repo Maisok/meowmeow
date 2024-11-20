@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <<title>BB</title>
+    <title>BB</title>
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
 </head>
 <body>
@@ -21,7 +21,7 @@
     <!-- Login Form -->
     <section class="flex items-center justify-center w-full mt-8 px-4">
         <div class="bg-white rounded-xl shadow-lg p-6 md:p-12 w-full max-w-md border border-gray-300">
-            <form action="{{ route('login') }}" method="POST" class="flex flex-col gap-4">
+            <form action="{{ route('login') }}" method="POST" class="flex flex-col gap-4" onsubmit="return validateForm()">
                 @csrf
                 <!-- Email Input -->
                 <div>
@@ -47,5 +47,32 @@
         </div>
     </section>
     <x-footer/>
+
+    <script>
+        function validateForm() {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            // Валидация email
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(emailInput.value)) {
+                alert('Пожалуйста, введите корректный email.');
+                return false;
+            }
+
+            // Простая проверка на пустое поле пароля
+            if (passwordInput.value.trim() === '') {
+                alert('Пожалуйста, введите пароль.');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('email').addEventListener('input', function() {
+            // Ограничиваем ввод только символами, соответствующими формату email
+            this.value = this.value.replace(/[^a-zA-Z0-9._@-]/g, '');
+        });
+    </script>
 </body>
 </html>

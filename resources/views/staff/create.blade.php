@@ -22,7 +22,7 @@
     <section class="flex items-center justify-center w-full mt-8 px-4">
         <div class="bg-white rounded-xl shadow-lg p-6 md:p-12 w-full max-w-md border border-gray-300">
             <h2 class="text-2xl font-semibold mb-6">Добавить сотрудника</h2>
-            <form action="{{ route('admin.staff.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
+            <form action="{{ route('admin.staff.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4" onsubmit="return validateForm()">
                 @csrf
                 <!-- First Name Input -->
                 <div>
@@ -43,7 +43,7 @@
                 <!-- Position Input -->
                 <div>
                     <label class="sr-only" for="position">Должность</label>
-                    <input type="text" id="position" name="position" placeholder="Должность" class="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <input type="text" id="position" name="position" placeholder="Должность" maxlength="30" class="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
                     @error('position')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -76,5 +76,67 @@
         </div>
     </section>
     <x-footer/>
+
+    <script>
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function validateForm() {
+            const firstNameInput = document.getElementById('first_name');
+            const lastNameInput = document.getElementById('last_name');
+            const positionInput = document.getElementById('position');
+
+            // Валидация имени
+            if (!/^[a-zA-Zа-яА-Я\s]+$/.test(firstNameInput.value)) {
+                alert('Имя должно содержать только буквы и пробелы.');
+                return false;
+            }
+
+            // Валидация фамилии
+            if (!/^[a-zA-Zа-яА-Я\s]+$/.test(lastNameInput.value)) {
+                alert('Фамилия должна содержать только буквы и пробелы.');
+                return false;
+            }
+
+            // Валидация должности
+            if (!/^[a-zA-Zа-яА-Я\s]+$/.test(positionInput.value)) {
+                alert('Должность должна содержать только буквы и пробелы.');
+                return false;
+            }
+
+            if (positionInput.value.length > 30) {
+                alert('Должность не должна превышать 30 символов.');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('first_name').addEventListener('input', function() {
+            // Ограничиваем ввод только символами и пробелами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+            // Делаем первый символ заглавным
+            this.value = capitalizeFirstLetter(this.value);
+        });
+
+        document.getElementById('last_name').addEventListener('input', function() {
+            // Ограничиваем ввод только символами и пробелами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+            // Делаем первый символ заглавным
+            this.value = capitalizeFirstLetter(this.value);
+        });
+
+        document.getElementById('position').addEventListener('input', function() {
+            // Ограничиваем ввод только символами и пробелами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+            // Делаем первый символ заглавным
+            this.value = capitalizeFirstLetter(this.value);
+            // Ограничиваем длину до 30 символов
+            if (this.value.length > 30) {
+                this.value = this.value.slice(0, 30);
+            }
+        });
+    </script>
 </body>
 </html>

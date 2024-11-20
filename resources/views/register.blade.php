@@ -23,7 +23,7 @@
     <!-- Registration Form -->
     <section class="flex items-center justify-center w-full mt-8 mb-24 px-4">
         <div class="bg-white rounded-xl shadow-lg p-6 md:p-12 w-full max-w-md border border-gray-300">
-            <form action="{{ route('register') }}" method="POST" class="flex flex-col gap-4">
+            <form action="{{ route('register') }}" method="POST" class="flex flex-col gap-4" onsubmit="return validateForm()">
                 @csrf
                 <!-- Name Input -->
                 <div>
@@ -44,7 +44,7 @@
                 <!-- Password Input -->
                 <div>
                     <label class="sr-only" for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="введите пароль" class="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <input type="password" id="password" minlength="8" name="password" placeholder="введите пароль" class="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
                     @error('password')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                     @enderror
@@ -52,7 +52,7 @@
                 <!-- Confirm Password Input -->
                 <div>
                     <label class="sr-only" for="password_confirmation">Confirm Password</label>
-                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="введите пароль еще раз" class="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <input type="password" id="password_confirmation" minlength="8" name="password_confirmation" placeholder="введите пароль еще раз" class="w-full px-4 py-2 rounded-full border border-gray-300 text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
                 </div>
                 <!-- Google reCAPTCHA -->
                 <div class="g-recaptcha" data-sitekey="6LcjLHwqAAAAAHKmQUlnvdo79rwYYsvmdFq695HU"></div>
@@ -69,5 +69,47 @@
         </div>
     </section>
     <x-footer/>
+
+    <script>
+        function validateForm() {
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+
+            // Валидация имени
+            if (nameInput.value.length > 30) {
+                alert('Имя не должно превышать 30 символов.');
+                return false;
+            }
+
+            // Валидация email
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(emailInput.value)) {
+                alert('Пожалуйста, введите корректный email.');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('name').addEventListener('input', function() {
+            // Ограничиваем ввод только символами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+
+            // Ограничиваем длину до 30 символов
+            if (this.value.length > 30) {
+                this.value = this.value.slice(0, 30);
+            }
+
+            // Делаем первый символ заглавным
+            if (this.value.length > 0) {
+                this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);
+            }
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            // Ограничиваем ввод только символами, соответствующими формату email
+            this.value = this.value.replace(/[^a-zA-Z0-9._@-]/g, '');
+        });
+    </script>
 </body>
 </html>

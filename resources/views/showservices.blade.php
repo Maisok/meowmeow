@@ -29,11 +29,11 @@
                     @csrf
                     <div class="form-group">
                         <label for="name" class="block text-gray-700 font-bold mb-2">Имя</label>
-                        <input type="text" name="name" class="form-control w-full p-2 border border-gray-300 rounded-md" required>
+                        <input type="text" id="name" name="name" class="form-control w-full p-2 border border-gray-300 rounded-md" required>
                     </div>
                     <div class="form-group">
                         <label for="phone" class="block text-gray-700 font-bold mb-2">Телефон</label>
-                        <input type="text" name="phone" class="form-control w-full p-2 border border-gray-300 rounded-md" required>
+                        <input type="text" id="phone" name="phone" class="form-control w-full p-2 border border-gray-300 rounded-md" required>
                     </div>
                     <div class="form-group">
                         <label for="date" class="block text-gray-700 font-bold mb-2">Дата</label>
@@ -58,8 +58,42 @@
     <x-footer/>
 
     <script>
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function formatPhoneNumber(input) {
+            // Удаляем все нецифровые символы
+            let phoneNumber = input.value.replace(/\D/g, '');
+
+            // Форматируем номер телефона
+            if (phoneNumber.length > 0) {
+                phoneNumber = '8 ' + phoneNumber.slice(1, 4) + ' ' + phoneNumber.slice(4, 7) + ' ' + phoneNumber.slice(7, 9) + ' ' + phoneNumber.slice(9, 11);
+            }
+
+            // Обновляем значение ввода
+            input.value = phoneNumber;
+        }
+
         function validateForm() {
+            const nameInput = document.getElementById('name');
+            const phoneInput = document.getElementById('phone');
             const dateInput = document.getElementById('appointmentDate');
+
+            // Валидация имени
+            if (!/^[a-zA-Zа-яА-Я\s]+$/.test(nameInput.value)) {
+                alert('Имя должно содержать только буквы и пробелы.');
+                return false;
+            }
+
+            // Валидация телефона
+            const phoneNumber = phoneInput.value.replace(/\D/g, '');
+            if (phoneNumber.length !== 11) {
+                alert('Пожалуйста, введите корректный номер телефона в формате 8 888 888 88 88');
+                return false;
+            }
+
+            // Валидация даты
             const selectedDate = new Date(dateInput.value);
             const today = new Date();
             today.setHours(0, 0, 0, 0); // Устанавливаем время на начало дня
@@ -71,6 +105,17 @@
 
             return true;
         }
+
+        document.getElementById('name').addEventListener('input', function() {
+            // Ограничиваем ввод только символами и пробелами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+            // Делаем первый символ заглавным
+            this.value = capitalizeFirstLetter(this.value);
+        });
+
+        document.getElementById('phone').addEventListener('input', function() {
+            formatPhoneNumber(this);
+        });
     </script>
 </body>
 </html>

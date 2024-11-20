@@ -9,12 +9,11 @@
 <body>
     <x-header/>
 
-
     <!-- Create Specialist Form -->
     <section class="flex items-center justify-center w-full mt-8 px-4">
         <div class="bg-white rounded-xl shadow-lg p-6 md:p-12 w-full max-w-md border border-gray-300">
             <h2 class="text-2xl font-semibold mb-6">Добавить специалиста</h2>
-            <form action="{{ route('admin.specialists.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4">
+            <form action="{{ route('admin.specialists.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-4" onsubmit="return validateForm()">
                 @csrf
                 <!-- Name Input -->
                 <div>
@@ -52,5 +51,34 @@
         </div>
     </section>
     <x-footer/>
+
+    <script>
+        function validateForm() {
+            const nameInput = document.getElementById('name');
+
+            // Валидация имени
+            if (!/^[a-zA-Zа-яА-Я\s]+$/.test(nameInput.value)) {
+                alert('Имя должно содержать только буквы и пробелы.');
+                return false;
+            }
+
+            if (nameInput.value.length > 30) {
+                alert('Имя не должно превышать 30 символов.');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('name').addEventListener('input', function() {
+            // Ограничиваем ввод только символами и пробелами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+
+            // Ограничиваем длину до 30 символов
+            if (this.value.length > 30) {
+                this.value = this.value.slice(0, 30);
+            }
+        });
+    </script>
 </body>
 </html>

@@ -22,7 +22,7 @@
     <section class="flex items-center justify-center w-full mt-8 px-4 mb-24">
         <div class="bg-white rounded-xl shadow-lg p-6 md:p-12 w-full max-w-md border border-gray-300">
             <h2 class="text-2xl font-semibold mb-6">Редактирование профиля</h2>
-            <form action="{{ route('profile.update') }}" method="POST" class="flex flex-col gap-4">
+            <form action="{{ route('profile.update') }}" method="POST" class="flex flex-col gap-4" onsubmit="return validateForm()">
                 @csrf
                 <!-- Name Input -->
                 <div>
@@ -61,5 +61,51 @@
         </div>
     </section>
     <x-footer/>
+
+    <script>
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function validateForm() {
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const passwordConfirmationInput = document.getElementById('password_confirmation');
+
+            // Валидация имени
+            if (!/^[a-zA-Zа-яА-Я\s]+$/.test(nameInput.value)) {
+                alert('Имя должно содержать только буквы и пробелы.');
+                return false;
+            }
+
+            // Валидация email
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailPattern.test(emailInput.value)) {
+                alert('Пожалуйста, введите корректный email.');
+                return false;
+            }
+
+            // Валидация пароля
+            if (passwordInput.value !== passwordConfirmationInput.value) {
+                alert('Пароли не совпадают.');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('name').addEventListener('input', function() {
+            // Ограничиваем ввод только символами и пробелами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+            // Делаем первый символ заглавным
+            this.value = capitalizeFirstLetter(this.value);
+        });
+
+        document.getElementById('email').addEventListener('input', function() {
+            // Ограничиваем ввод только символами, соответствующими формату email
+            this.value = this.value.replace(/[^a-zA-Z0-9._@-]/g, '');
+        });
+    </script>
 </body>
 </html>

@@ -11,7 +11,7 @@ class AppointmentController extends Controller
     {
         // Валидация данных
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:30',
             'phone' => ['required', 'string', 'regex:/^8 \d{3} \d{3} \d{2} \d{2}$/'],
         ]);
 

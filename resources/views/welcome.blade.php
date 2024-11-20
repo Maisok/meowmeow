@@ -53,7 +53,7 @@
                 <form action="{{ route('appointments.store') }}" method="POST" class="space-y-4" onsubmit="return validateForm()">
                     @csrf
                     <div>
-                        <input type="text" name="name" placeholder="ваше имя*" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-400">
+                        <input type="text" id="name" name="name" maxlength="30" placeholder="ваше имя*" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-400">
                         @error('name')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
@@ -116,6 +116,16 @@
 
         document.getElementById('phone').addEventListener('input', function() {
             formatPhoneNumber(this);
+        });
+
+        document.getElementById('name').addEventListener('input', function() {
+            // Ограничиваем ввод только символами
+            this.value = this.value.replace(/[^a-zA-Zа-яА-Я\s]/g, '');
+
+            // Делаем первый символ заглавным
+            if (this.value.length > 0) {
+                this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);
+            }
         });
     </script>
 </body>
